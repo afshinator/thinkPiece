@@ -1,53 +1,38 @@
 import React, { Component } from 'react';
-
 import Posts from './Posts';
+import { collectIdsAndDocs } from '../utils';
+import Authentication from './Authentication'
+import { firestore, auth, createUserProfileDocument } from '../firebase';
 
 class Application extends Component {
   state = {
-    posts: [
-      {
-        id: '1',
-        title: 'A Very Hot Take',
-        content:
-          'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perferendis suscipit repellendus modi unde cumque, fugit in ad necessitatibus eos sed quasi et! Commodi repudiandae tempora ipsum fugiat. Quam, officia excepturi!',
-        user: {
-          uid: '123',
-          displayName: 'Bill Murray',
-          email: 'billmurray@mailinator.com',
-          photoURL: 'https://www.fillmurray.com/300/300',
-        },
-        stars: 1,
-        comments: 47,
-      },
-      {
-        id: '2',
-        title: 'The Sauciest of Opinions',
-        content:
-          'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Perferendis suscipit repellendus modi unde cumque, fugit in ad necessitatibus eos sed quasi et! Commodi repudiandae tempora ipsum fugiat. Quam, officia excepturi!',
-        user: {
-          uid: '456',
-          displayName: 'Mill Burray',
-          email: 'notbillmurray@mailinator.com',
-          photoURL: 'https://www.fillmurray.com/400/400',
-        },
-        stars: 3,
-        comments: 0,
-      },
-    ],
+    user: null,
   };
 
-  handleCreate = post => {
-    const { posts } = this.state;
-    this.setState({ posts: [post, ...posts] });
-  };
+  unsubscribeFromAuth = null;
+
+  componentDidMount = async () => {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      console.log('unsubscribeFromAuth, userAuth ', userAuth)
+      const user = await createUserProfileDocument(userAuth)
+      console.log('unsubFromAuth ', user)
+      this.setState({ user })
+    })
+  }
+
+  componentWillUnmount = () => {
+    this.unsubscribeFromAuth();
+  }
+
 
   render() {
-    const { posts } = this.state;
+    const { user } = this.state;
 
     return (
       <main className="Application">
         <h1>Think Piece</h1>
-        <Posts posts={posts} onCreate={this.handleCreate} />
+        <Authentication user={user} />
+        <Posts />
       </main>
     );
   }
