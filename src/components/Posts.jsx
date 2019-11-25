@@ -1,24 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Post from './Post';
 import AddPost from './AddPost';
 import { PostsContext } from '../providers/PostsProvider'
 
 const Posts = () => {
+  const posts = useContext(PostsContext)
+
   return (
     <section className="Posts">
-      <AddPost/>
-      <PostsContext.Consumer>
-        {posts => 
-            posts.map(post => {
-              // console.info(post.user)
-              return (
-              <Post {...post} key={post.id} />
-            )
-              }
-              )
-        }
-      </PostsContext.Consumer>
-
+      <AddPost />
+      {posts.map(post => {
+          // console.info(post.user)
+          return (
+            <Post {...post} key={post.id} />
+          )
+        })
+      }
     </section>
   )
 }
