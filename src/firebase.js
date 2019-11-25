@@ -25,14 +25,12 @@ window.firebase = firebase;
 
 export const createUserProfileDocument = async (user, additionalData) => {
   if ( !user ) return;
-console.log('it is ', user.uid)
+
   //Get a ref to the place in db where user might be
   const userRef = firestore.doc(`users/${user.uid}`)
 
   // Go and fetch the doc from that location
   const snapshot = await userRef.get()
-
-console.info('does user exist? ', snapshot)
 
   if (!snapshot.exist) {
     const { displayName, email, photoURL } = user;
