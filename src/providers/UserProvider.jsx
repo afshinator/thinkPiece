@@ -13,7 +13,7 @@ class UserProvider extends Component {
       if ( userAuth ) {
         const userRef = await createUserProfileDocument(userAuth)
         userRef.onSnapshot(snapshot => {
-          this.setState({ user: { uid: snapshot.id, ... snapshot.data() }})
+          this.setState({ user: { uid: snapshot.id, ...snapshot.data() }})
         })
       }
       
